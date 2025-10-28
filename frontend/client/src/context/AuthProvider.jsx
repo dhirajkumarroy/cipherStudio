@@ -1,14 +1,13 @@
 // src/context/AuthProvider.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "./AuthContext";
+import { AuthContext } from "./AuthContext.js";
 
-// This file only exports components → ✅ fast refresh friendly
-export const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // Load user on mount
+  // ✅ Load user when app starts
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
@@ -17,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Login logic
+  // ✅ Login logic
   const loginUser = (user, token) => {
     setUser(user);
     localStorage.setItem("token", token);
@@ -25,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     navigate("/studio");
   };
 
-  // Logout logic
+  // ✅ Logout logic
   const logout = () => {
     setUser(null);
     localStorage.removeItem("token");
@@ -39,3 +38,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+export default AuthProvider;

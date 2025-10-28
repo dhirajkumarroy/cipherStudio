@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 // import { useAuth } from "../context/AuthContext";
-import { useAuth } from "../context/useAuth";
+import useAuth from "../context/useAuth.js"; // ✅ FIXED
+
 
 
 export default function ProtectedRoute({ children }) {

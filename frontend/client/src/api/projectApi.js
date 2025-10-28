@@ -1,20 +1,12 @@
-// import api from "./axiosInstance";
-
-// export const fetchProjects = async () => {
-//   const res = await api.get("/projects", {
-//     headers: { "Cache-Control": "no-cache" }, // <-- Add this
-//   });
-//   return res.data;
-// };
-
-
 // src/api/projectApi.js
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "./axiosInstance.js";
 
 // ✅ Fetch all projects (GET /api/projects)
-export const getAllProjects = async () => {
+export const fetchProjects = async () => {
   try {
-    const res = await axiosInstance.get("/projects");
+    const res = await axiosInstance.get("/projects", {
+      headers: { "Cache-Control": "no-cache" }, // ensures fresh data
+    });
     return res.data;
   } catch (err) {
     console.error("❌ Error fetching projects:", err.response?.data || err.message);
@@ -23,7 +15,7 @@ export const getAllProjects = async () => {
 };
 
 // ✅ Fetch a single project by ID (GET /api/projects/:id)
-export const getProjectById = async (id) => {
+export const fetchProjectById = async (id) => {
   try {
     const res = await axiosInstance.get(`/projects/${id}`);
     return res.data;

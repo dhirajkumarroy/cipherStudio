@@ -1,50 +1,47 @@
-// import axios from "axios";
+import axios from 'axios';
 
-// // Always point to backend
-// const api = axios.create({
-//   baseURL: "http://localhost:3000/api", // ✅ backend URL
-// });
-
-// // Automatically add JWT token if exists
-// api.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("token");
-//   if (token) config.headers.Authorization = `Bearer ${token}`;
-//   return config;
-// });
-
-// export default api;
-// src/api/axiosInstance.js
-import axios from "axios";
+// This is the base URL of your backend API
+const API_URL = '/api'; 
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api",
-  headers: { "Content-Type": "application/json" },
+  baseURL: API_URL
 });
 
-// ✅ Attach JWT token automatically before each request
+/**
+ * Request Interceptor
+ * This function runs BEFORE every request is sent.
+ * It grabs the token from localStorage and adds it to the headers.
+ */
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      // Add the token as a 'Bearer' token to the Authorization header
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    // Add no-cache header to all GET requests
+    if (config.method === 'get') {
+      config.headers['Cache-Control'] = 'no-cache';
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    // Handle request errors
+    return Promise.reject(error);
+  }
 );
 
-// ✅ Handle unauthorized responses (401)
+/**
+ * Response Interceptor
+ */
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => response, // Simply return successful responses
   (error) => {
-    if (error.response?.status === 401) {
-      console.warn("⚠️ Unauthorized! Logging out...");
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      window.location.href = "/login";
-    }
+    // We re-throw the error so the .catch() block in our components
+    // can handle it (e.g., call logout() on 401).
     return Promise.reject(error);
   }
 );
 
 export default axiosInstance;
+
